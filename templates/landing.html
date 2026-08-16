@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="landing-container">
+    <div class="hero-glow-bg"></div>
+    <div class="hero-section">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            <span>✨ AI Prompt Engineering & Validation Studio</span>
+        </div>
+        <h1 class="hero-title">Validate & Master <span class="gradient-text">Prompt Engineering</span></h1>
+        <p class="hero-subtitle">Test advanced prompting methodologies live against Google Gemini. Validate structured output formats, auto-refine JSON & YAML syntax errors, and run Chain-of-Thought reasoning comparisons.</p>
+        
+        <div class="hero-buttons">
+            <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-large btn-glow">
+                <span>Start Validating Free</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline btn-large">
+                Log In to Workspace
+            </a>
+        </div>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon-gradient icon-structured">📝</div>
+            <h3>Structured Formats</h3>
+            <p>Force model responses into Markdown tables, bullet lists, or custom schemas with complete formatting flexibility.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-gradient icon-json">⚙️</div>
+            <h3>JSON / YAML Refinement</h3>
+            <p>Generate parseable JSON or YAML structures. Built-in syntax validator automatically detects errors and triggers self-refinement.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-gradient icon-cot">🧠</div>
+            <h3>Chain-of-Thought</h3>
+            <p>Compare baseline direct responses against step-by-step reasoning outputs side-by-side to analyze logic accuracy.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

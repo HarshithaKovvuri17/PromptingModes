@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Studio Dashboard - PromptCraft Studio{% endblock %}
+
+{% block content %}
+<div class="studio-workspace">
+    <!-- Top Horizontal Mode Ribbon -->
+    <header class="studio-top-ribbon">
+        <div class="ribbon-title-wrap">
+            <span class="sidebar-badge">TESTING MODES</span>
+            <h3>Prompt Studio Modes</h3>
+        </div>
+
+        <div class="action-buttons ribbon-action-buttons">
+            <button class="mode-card action-btn" data-task="structured">
+                <div class="mode-card-header">
+                    <span class="mode-icon icon-bg-structured">📝</span>
+                    <span class="mode-title">Structured Format</span>
+                    <span class="mode-active-indicator"></span>
+                </div>
+                <p class="mode-desc">Markdown tables & schemas</p>
+            </button>
+
+            <button class="mode-card action-btn" data-task="json">
+                <div class="mode-card-header">
+                    <span class="mode-icon icon-bg-json">⚙️</span>
+                    <span class="mode-title">JSON / YAML Generation</span>
+                    <span class="mode-active-indicator"></span>
+                </div>
+                <p class="mode-desc">Auto-refine syntax errors</p>
+            </button>
+
+            <button class="mode-card action-btn" data-task="cot">
+                <div class="mode-card-header">
+                    <span class="mode-icon icon-bg-cot">🧠</span>
+                    <span class="mode-title">Chain-of-Thought</span>
+                    <span class="mode-active-indicator"></span>
+                </div>
+                <p class="mode-desc">Step-by-step reasoning</p>
+            </button>
+        </div>
+    </header>
+
+    <!-- Split Studio Canvas -->
+    <div class="studio-split-canvas">
+        <!-- Left Panel: Prompt Editor & Controls -->
+        <section class="studio-left-panel">
+            <div class="panel-header">
+                <h3>Prompt Editor</h3>
+                <span class="prompt-hint">Press <b>Enter</b> to run</span>
+            </div>
+
+            <div class="prompt-section">
+                <div class="input-wrapper">
+                    <input type="hidden" id="task-type" value="general">
+                    <textarea id="chat-input" rows="5" placeholder="Type your prompt here..."></textarea>
+                    <button id="send-btn" class="btn btn-primary btn-send-full" type="button" title="Run Prompt Test">
+                        <span>Run Validation Test</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="error-message" class="error-alert hidden"></div>
+
+            <!-- Reference Example Inspector Card -->
+            <div id="reference-example-card" class="reference-card hidden">
+                <div class="reference-header">
+                    <span class="reference-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        Reference Example
+                    </span>
+                    <div class="reference-actions">
+                        <button id="inject-example-btn" class="btn-inject-example" type="button" title="Use this prompt in input box">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                            <span>Use Prompt</span>
+                        </button>
+                        <button id="copy-example-btn" class="btn-copy-example" type="button" title="Copy example text to clipboard">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span id="copy-btn-text">Copy</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="reference-example-text" class="reference-text"></div>
+            </div>
+
+            <div class="left-panel-footer">
+                <div class="user-pill">
+                    <div class="user-avatar">{{ full_name[0] | upper }}</div>
+                    <div class="user-info">
+                        <span class="user-name">{{ full_name }}</span>
+                        <span class="user-role">Prompt Engineer</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Live Response & CoT Stream -->
+        <section class="studio-right-panel">
+            <header class="chat-header">
+                <div class="header-left">
+                    <h2>Welcome, <span class="gradient-text">{{ full_name }}</span></h2>
+                    <p class="header-subtitle">Live prompt output stream & evaluation inspector</p>
+                </div>
+                <div id="current-mode-badge" class="badge badge-gray">
+                    <span class="badge-pulse-dot"></span>
+                    <span class="badge-text">Mode: General Chat</span>
+                </div>
+            </header>
+
+            <div class="chat-history" id="chat-history">
+                <div class="chat-bubble bot-bubble bot-welcome" id="bot-welcome-banner">
+                    <div class="welcome-icon">⚡</div>
+                    <div class="welcome-content">
+                        <h4>PromptCraft Assistant Ready</h4>
+                        <p>👋 Welcome to your AI Prompt Engineering Playground powered by Gemini — chat naturally or choose a testing mode to experiment with Structured Formats, JSON/YAML schemas, and reasoning-based prompts.</p>
+                    </div>
+                </div>
+                <!-- Chat messages will be injected here -->
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+Flask==3.0.3
+google-generativeai==0.8.2
+python-dotenv==1.0.1
+markdown==3.7
+Werkzeug==3.0.4
+PyYAML==6.0.2
+gunicorn==22.0.0
