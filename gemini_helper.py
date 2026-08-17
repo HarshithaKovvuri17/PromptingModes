@@ -8,9 +8,11 @@ import re
 if Config.GEMINI_API_KEY:
     genai.configure(api_key=Config.GEMINI_API_KEY)
 
-MODEL_NAME = 'gemini-3.6-flash'
+MODEL_NAME = 'gemini-3.7-flash'
 
 def get_model():
+    if Config.GEMINI_API_KEY:
+        genai.configure(api_key=Config.GEMINI_API_KEY)
     return genai.GenerativeModel(MODEL_NAME)
 
 def generate_normal_response(prompt):
