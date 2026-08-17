@@ -8,7 +8,7 @@ import re
 if Config.GEMINI_API_KEY:
     genai.configure(api_key=Config.GEMINI_API_KEY)
 
-MODEL_NAME = 'gemini-3.7-flash'
+MODEL_NAME = 'gemini-1.5-flash'
 
 def get_model():
     if Config.GEMINI_API_KEY:
