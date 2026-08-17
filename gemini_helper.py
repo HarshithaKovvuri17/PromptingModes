@@ -8,23 +8,31 @@ import re
 if Config.GEMINI_API_KEY:
     genai.configure(api_key=Config.GEMINI_API_KEY)
 
-MODEL_NAME = 'gemini-1.5-flash'
+MODEL_NAMES = ['gemini-2.5-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-flash-latest']
 
-def get_model():
+def get_model(model_name=None):
     if Config.GEMINI_API_KEY:
         genai.configure(api_key=Config.GEMINI_API_KEY)
-    return genai.GenerativeModel(MODEL_NAME)
+    name = model_name or MODEL_NAMES[0]
+    return genai.GenerativeModel(name)
 
 def generate_normal_response(prompt):
     """
-    Sends a standard prompt to the Gemini API.
+    Sends a standard prompt to the Gemini API with automatic model fallbacks.
     """
-    try:
-        model = get_model()
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return f"Error generating response: {str(e)}"
+    if Config.GEMINI_API_KEY:
+        genai.configure(api_key=Config.GEMINI_API_KEY)
+
+    last_error = None
+    for model_name in MODEL_NAMES:
+        try:
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            last_error = str(e)
+            continue
+    return f"Error generating response: {last_error}"
 
 def extract_code_block(text):
     """Attempts to extract JSON or YAML from markdown code blocks or plain text."""
@@ -42,14 +50,14 @@ def generate_json_or_yaml_with_refinement(prompt, max_retries=2):
     Attempts to generate valid JSON or YAML. If it fails to parse, prompts the model again to fix syntax errors.
     Returns (parsed_data, final_raw_text, format_type, was_refined, success).
     """
-    model = get_model()
     current_prompt = prompt
     was_refined = False
     
     for attempt in range(max_retries):
         try:
-            response = model.generate_content(current_prompt)
-            raw_text = response.text
+            raw_text = generate_normal_response(current_prompt)
+            if raw_text.startswith("Error generating response:"):
+                return None, raw_text, 'unknown', was_refined, False
             
             extracted_block = extract_code_block(raw_text)
             
