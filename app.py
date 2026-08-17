@@ -34,7 +34,7 @@ def chat():
         return jsonify({'error': 'Unauthorized'}), 401
 
     if not Config.GEMINI_API_KEY:
-        return jsonify({'error': 'API key not configured.'}), 500
+        return jsonify({'error': 'API key not configured. Please set GEMINI_API_KEY in Render environment settings.'}), 500
 
     data = request.get_json()
     prompt = data.get('prompt')
